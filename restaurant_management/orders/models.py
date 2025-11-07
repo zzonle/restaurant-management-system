@@ -7,6 +7,9 @@ class Order(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=20, default='pending')  # pending, completed, cancelled
 
+    class Meta:
+        ordering = ['-order_date']
+
     def __str__(self):
         return f"Order #{self.id} - {self.customer_name}"
 
@@ -21,6 +24,9 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)  # precio al momento de la orden
     
+    class Meta:
+        ordering = ['order', 'item']
+
     @property
     def subtotal(self):
         return self.quantity * self.price
