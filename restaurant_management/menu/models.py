@@ -1,4 +1,3 @@
-
 from django.db import models
 
 class MenuItem(models.Model):
@@ -10,5 +9,3 @@ class MenuItem(models.Model):
     def __str__(self):
         return self.name
 
-
-# Create your models here.
