@@ -2,14 +2,12 @@
 from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
 from django import forms
-
-# Cambia MenuItem por el nombre real de tu modelo y ajusta los campos según corresponda
 from .models import MenuItem
 
 class MenuItemForm(forms.ModelForm):
     class Meta:
         model = MenuItem
-        fields = ['name', 'description', 'price']  # ajusta los campos a tu modelo
+        fields = ['name', 'description', 'price']  
 
 def item_list(request):
     """Listar (READ)"""
@@ -46,4 +44,3 @@ def item_delete(request, pk):
         item.delete()
         return redirect('menu:list')
     return render(request, 'menu/menu_confirm_delete.html', {'item': item})
-# ...existing code...
