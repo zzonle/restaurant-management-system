@@ -6,6 +6,16 @@
 __pycache__/
 *.pyc
 
+<<<<<<< HEAD
+=======
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+.env
+
+>>>>>>> d6aa1e26f5202b0fcce1b234339cd881c26147fa
 # Django
 *.log
 local_settings.py
