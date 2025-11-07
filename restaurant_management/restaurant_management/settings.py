@@ -1,9 +1,9 @@
 """
 Django settings for restaurant_management project.
 """
-
-from pathlib import Path
-import os  # ← TE FALTABA
+import os
+from pathlib import Path   # ← te faltaba
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,11 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Project apps
     'customers',
-    'menu',       
+    'menu',
     'orders',
     'staff',
     'inventory',
-    # Utilidades opcionales:
     # 'django.contrib.humanize',
 ]
 
@@ -50,7 +49,7 @@ ROOT_URLCONF = 'restaurant_management.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # útil si tienes templates globales
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,21 +64,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'restaurant_management.wsgi.application'
 
-# --- Base de datos (MySQL por variables de entorno) ---
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'rms_db'),
-        'USER': os.getenv('DB_USER', 'root'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),   # NUNCA dejes claves hardcodeadas
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
-        'OPTIONS': {
-            # Evita errores de codificación y problemas de zona horaria
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+# --- Base de datos: usa DATABASE_URL (Postgres Render). Fallback a SQLite en caso de no tenerla ---
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    # Opcional: podrías poner aquí tu MySQL local, pero para simplificar usamos SQLite en ausencia de DATABASE_URL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # --- Password validators ---
 AUTH_PASSWORD_VALIDATORS = [
@@ -90,14 +88,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # --- i18n / zona horaria ---
-LANGUAGE_CODE = 'es-cl'                # mejor para Chile
-TIME_ZONE = 'America/Santiago'         # tu zona
+LANGUAGE_CODE = 'es-cl'
+TIME_ZONE = 'America/Santiago'
 USE_I18N = True
-USE_TZ = True                          # guarda en UTC, convierte al mostrar
+USE_TZ = True
 
 # --- Static / media ---
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # para collectstatic en despliegue
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
