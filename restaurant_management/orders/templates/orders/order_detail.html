@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido #{{ order.pk }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="{% url 'orders:order_list' %}" 
+           class="inline-flex items-center text-amber-600 hover:text-amber-700 font-medium">
+            <span class="text-xl mr-2">←</span>
+            <span>Volver a pedidos</span>
+        </a>
+    </div>
+
+    <!-- Order Header -->
+    <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-8 mb-6 text-white">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-4xl font-bold">Pedido #{{ order.pk }}</h2>
+            <span class="px-4 py-2 bg-white/30 backdrop-blur-sm rounded-full text-lg font-semibold">
+                {{ order.status }}
+            </span>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-4 mt-6">
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+                <p class="text-amber-100 text-sm mb-1">Cliente</p>
+                <p class="text-2xl font-bold">{{ order.customer_name }}</p>
+            </div>
+            
+            {% if order.order_date %}
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+                <p class="text-amber-100 text-sm mb-1">Fecha</p>
+                <p class="text-xl font-semibold">{{ order.order_date }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if order.total %}
+        <div class="mt-6 bg-white/30 backdrop-blur-sm rounded-xl p-6 text-center">
+            <p class="text-amber-100 text-sm mb-1">Total del Pedido</p>
+            <p class="text-5xl font-bold">${{ order.total }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Items Section -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-gray-800">🍴 Ítems del Pedido</h3>
+            <a href="{% url 'orders:item_create' order.pk %}" 
+               class="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center space-x-2">
+                <span class="text-lg">➕</span>
+                <span>Agregar Ítem</span>
+            </a>
+        </div>
+
+        {% if items %}
+            <div class="space-y-3">
+                {% for it in items %}
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-5 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-bold text-gray-800 mb-2">{{ it.item.name }}</h4>
+                            <div class="flex items-center space-x-6 text-sm text-gray-600">
+                                <span class="flex items-center">
+                                    <span class="font-semibold mr-1">Cantidad:</span>
+                                    <span class="bg-amber-200 px-3 py-1 rounded-full font-bold text-amber-800">{{ it.quantity }}</span>
+                                </span>
+                                <span class="flex items-center">
+                                    <span class="font-semibold mr-1">Precio unitario:</span>
+                                    <span class="font-bold text-gray-800">${{ it.price }}</span>
+                                </span>
+                                <span class="flex items-center">
+                                    <span class="font-semibold mr-1">Subtotal:</span>
+                                    <span class="font-bold text-green-600 text-lg">${{ it.price|floatformat:2 }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-2 ml-4">
+                            <a href="{% url 'orders:item_update' it.pk %}" 
+                               class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 text-sm font-medium">
+                                ✏️
+                            </a>
+                            <a href="{% url 'orders:item_delete' it.pk %}" 
+                               class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200 text-sm font-medium">
+                                🗑️
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="text-6xl mb-4">🍽️</div>
+                <h4 class="text-xl font-bold text-gray-700 mb-2">Sin ítems en este pedido</h4>
+                <p class="text-gray-500 mb-6">Agrega productos del menú a este pedido</p>
+                <a href="{% url 'orders:item_create' order.pk %}" 
+                   class="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+                    ➕ Agregar Primer Ítem
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

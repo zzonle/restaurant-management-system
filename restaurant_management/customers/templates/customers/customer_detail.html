@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="{% url 'customer_list' %}" 
+           class="inline-flex items-center text-amber-600 hover:text-amber-700 font-medium">
+            <span class="text-xl mr-2">←</span>
+            <span>Volver a clientes</span>
+        </a>
+    </div>
+
+    <!-- Customer Header -->
+    <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl shadow-xl p-8 mb-6 text-white">
+        <div class="flex items-center mb-6">
+            <div class="bg-white/30 backdrop-blur-sm rounded-full p-4 mr-4">
+                <span class="text-5xl">👤</span>
+            </div>
+            <div>
+                <h2 class="text-4xl font-bold mb-2">{{ customer.name }}</h2>
+                <p class="text-amber-100 text-lg">Información del Cliente</p>
+            </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+                <p class="text-amber-100 text-sm mb-1">Email</p>
+                <p class="text-xl font-semibold">{{ customer.email }}</p>
+            </div>
+            
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+                <p class="text-amber-100 text-sm mb-1">Teléfono</p>
+                <p class="text-xl font-semibold">{{ customer.phone }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservations Section -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-gray-800">📅 Reservas</h3>
+            <a href="{% url 'reservation_create' customer.pk %}" 
+               class="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center space-x-2">
+                <span class="text-lg">➕</span>
+                <span>Nueva Reserva</span>
+            </a>
+        </div>
+
+        {% if reservations %}
+            <div class="space-y-3">
+                {% for r in reservations %}
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-5 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-4 mb-2">
+                                <span class="text-2xl">🗓️</span>
+                                <h4 class="text-xl font-bold text-gray-800">{{ r.reservation_date }}</h4>
+                            </div>
+                            <div class="flex items-center space-x-2 text-gray-600">
+                                <span class="text-lg">👥</span>
+                                <span class="font-semibold">{{ r.number_of_people }} personas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-2 ml-4">
+                            <a href="{% url 'reservation_edit' r.pk %}" 
+                               class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 text-sm font-medium">
+                                ✏️
+                            </a>
+                            <a href="{% url 'reservation_delete' r.pk %}" 
+                               class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200 text-sm font-medium">
+                                🗑️
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="text-6xl mb-4">📅</div>
+                <h4 class="text-xl font-bold text-gray-700 mb-2">Sin reservas</h4>
+                <p class="text-gray-500 mb-6">Este cliente no tiene reservas registradas</p>
+                <a href="{% url 'reservation_create' customer.pk %}" 
+                   class="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+                    ➕ Crear Primera Reserva
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

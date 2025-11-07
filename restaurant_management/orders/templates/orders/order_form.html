@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Editar pedido{% else %}Nuevo pedido{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <h2 class="text-3xl font-bold text-gray-800 flex items-center">
+            <span class="text-4xl mr-3">{% if form.instance.pk %}✏️{% else %}➕{% endif %}</span>
+            {% if form.instance.pk %}Editar Pedido{% else %}Nuevo Pedido{% endif %}
+        </h2>
+        <p class="text-gray-600 mt-2">
+            {% if form.instance.pk %}
+                Actualiza la información del pedido
+            {% else %}
+                Completa los datos para crear un nuevo pedido
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="space-y-2">
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-bold text-gray-700 mb-2">
+                    {% if field.name == 'customer_name' %}Cliente
+                    {% elif field.name == 'status' %}Estado
+                    {% elif field.name == 'order_date' %}Fecha del Pedido
+                    {% elif field.name == 'total' %}Total
+                    {% elif field.name == 'notes' %}Notas
+                    {% else %}{{ field.label }}{% endif %}
+                    {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.errors %}
+                    <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg">
+                        <p class="text-sm text-red-700 font-medium">{{ field.errors.0 }}</p>
+                    </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="text-sm text-gray-500 mt-1">{{ field.help_text }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <!-- Buttons -->
+            <div class="flex space-x-4 pt-6 border-t-2 border-gray-200">
+                <button type="submit" 
+                        class="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2">
+                    <span>💾</span>
+                    <span>Guardar Pedido</span>
+                </button>
+                
+                {% if form.instance.pk %}
+                    <a href="{% url 'orders:order_detail' form.instance.pk %}" 
+                       class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-4 rounded-xl font-bold text-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                        <span>❌</span>
+                        <span>Cancelar</span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'orders:order_list' %}" 
+                       class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-4 rounded-xl font-bold text-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                        <span>❌</span>
+                        <span>Cancelar</span>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

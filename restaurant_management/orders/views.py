@@ -2,13 +2,40 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django import forms
 from .models import Order, OrderItem
 from menu.models import MenuItem
+from customers.models import Customer
 
-# Forms
+
 class OrderForm(forms.ModelForm):
+    customer_name = forms.ModelChoiceField(
+        queryset=Customer.objects.order_by('name'),
+        label='Cliente',
+        empty_label='— Selecciona un cliente —',
+        widget=forms.Select(attrs={
+            'class': 'w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 bg-gray-50'
+        })
+    )
+
     class Meta:
         model = Order
         fields = ['customer_name', 'status']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Si el pedido ya tiene texto en customer_name, intenta preseleccionar el cliente
+        if self.instance and self.instance.pk and self.instance.customer_name:
+            try:
+                cliente = Customer.objects.get(name=self.instance.customer_name)
+                self.fields['customer_name'].initial = cliente.pk
+            except Customer.DoesNotExist:
+                self.fields['customer_name'].help_text = (
+                    f'El cliente "{self.instance.customer_name}" no existe. '
+                    'Selecciona uno de la lista.'
+                )
+
+    def clean_customer_name(self):
+        # Guardamos solo el nombre del cliente como texto (porque Order tiene un CharField)
+        cliente = self.cleaned_data['customer_name']
+        return cliente.name
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem

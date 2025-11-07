@@ -84,3 +84,12 @@ def reservation_delete(request, pk):
         return redirect('customer_detail', pk=customer_pk)
     return render(request, 'customers/reservation_confirm_delete.html', 
                  {'reservation': reservation})
+
+
+def customer_detail(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    reservations = Reservation.objects.filter(customer=customer).order_by("-reservation_date")
+    return render(request, "customers/customer_detail.html", {
+        "customer": customer,
+        "reservations": reservations,
+    })

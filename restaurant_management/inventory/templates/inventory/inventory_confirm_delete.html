@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar ítem{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <!-- Warning Icon -->
+        <div class="text-center mb-6">
+            <div class="inline-block bg-red-100 rounded-full p-6 mb-4">
+                <span class="text-6xl">⚠️</span>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Eliminar Ítem de Inventario</h2>
+            <p class="text-gray-600">Esta acción no se puede deshacer</p>
+        </div>
+
+        <!-- Confirmation Message -->
+        <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg mb-6">
+            <p class="text-lg text-gray-700">
+                ¿Estás seguro de que deseas eliminar 
+                <strong class="text-red-700">"{{ item.item_name }}"</strong> del inventario?
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex space-x-4">
+                <button type="submit" 
+                        class="flex-1 bg-red-500 hover:bg-red-600 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center space-x-2">
+                    <span>🗑️</span>
+                    <span>Sí, Eliminar</span>
+                </button>
+                
+                <a href="{% url 'inventory_list' %}" 
+                   class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-4 rounded-xl font-bold text-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                    <span>↩️</span>
+                    <span>Cancelar</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
