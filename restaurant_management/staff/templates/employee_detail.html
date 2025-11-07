@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-6">
+        <a href="{% url 'staff:employee_list' %}" 
+           class="text-amber-600 hover:text-amber-700 font-medium">
+            &larr; Volver a la lista
+        </a>
+    </div>
+
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="bg-{{ message.tags }}-100 border-l-4 border-{{ message.tags }}-500 text-{{ message.tags }}-700 p-4 mb-2" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800">Detalles del Empleado</h1>
+        </div>
+        
+        <div class="p-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Nombre:</label>
+                    <p class="mt-1 text-lg text-gray-900">{{ employee.name }}</p>
+                </div>
+                
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Posición:</label>
+                    <p class="mt-1 text-lg text-gray-900">{{ employee.position }}</p>
+                </div>
+                
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Salario:</label>
+                    <p class="mt-1 text-lg text-gray-900">${{ employee.salary }}</p>
+                </div>
+                
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-sm font-medium text-gray-600">Fecha de Contratación:</label>
+                    <p class="mt-1 text-lg text-gray-900">{{ employee.hire_date|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div class="flex justify-end space-x-4">
+                <a href="{% url 'staff:employee_edit' employee.pk %}" 
+                   class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                    Editar
+                </a>
+                <a href="{% url 'staff:employee_delete' employee.pk %}" 
+                   class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                    Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
